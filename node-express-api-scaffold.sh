@@ -83,7 +83,7 @@ if [[ -f $tsconfigfile ]]; then
     echo "Modifying $tsconfigfile content..."
     sed -i 's#\/\/ "baseUrl": ".\/"#"baseUrl": ".\/src"#g' $tsconfigfile
     sed -i 's#\/\/ "outDir": ".\/"#"outDir": "dist"#g' $tsconfigfile
-    sed -i 's#\/\/ "paths": {}#"paths": { "@/resources/*": ["resources/*"], "@/utils/*": ["utils/*"], "@/middleware": ["middleware/*"] }#g' $tsconfigfile
+    sed -i 's#\/\/ "paths": {}#"paths": { "@/resources/*": ["resources/*"], "@/utils/*": ["utils/*"], "@/middleware/*": ["middleware/*"] }#g' $tsconfigfile
 fi
 
 packagefile="package.json"
@@ -109,3 +109,20 @@ cd $SCRIPT_DIR
 cp .prettierrc.js $appDir
 cp .eslintrc.js $appDir
 cp .env.example $appDir/.env
+cp app.ts $appDir/src
+cp index.ts $appDir/src
+
+if [[ ! -d $appDir/src/utils/exceptions ]]; then
+    mkdir -p $appDir/src/utils/exceptions
+fi
+
+if [[ ! -d $appDir/src/utils/interfaces ]]; then
+    mkdir -p $appDir/src/utils/interfaces
+fi
+
+if [[ ! -d $appDir/src/middleware ]]; then
+    mkdir -p $appDir/src/middleware
+fi
+
+cp -r utils/* $appDir/src/utils
+cp -r middleware/* $appDir/src/middleware

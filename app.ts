@@ -37,10 +37,17 @@ class App {
 	}
 
 	private initializeErrorHandling(): void {
-		this.express.use(ErrorMiddleware());
+		this.express.use(ErrorMiddleware);
 	}
 
 	private initializeDatabaseConnection(): void {
-		
+		const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
+		mongoose.connect(`${MONGO_PATH}`);
+	}
+
+	public listen(): void {
+		this.express.listen(this.port, () => {
+			console.log(`App listening on port ${this.port}`)
+		})
 	}
 }
