@@ -3,6 +3,8 @@
 initnpm=1
 usageHelpText="Usage: ./$(basename $0) [-s|h] appdir"
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 Help()
 {
    echo $usageHelpText
@@ -44,6 +46,26 @@ fi
 
 cd "$appDir"
 
+# Create basic folders
+
+if [[ ! -d src ]]; then
+    mkdir src
+fi
+
+if [[ ! -d src/middleware ]]; then
+    mkdir src/middleware
+fi
+
+if [[ ! -d src/resources ]]; then
+    mkdir src/resources
+fi
+
+if [[ ! -d src/utils ]]; then
+    mkdir src/utils
+fi
+
+touch app.ts
+
 if [ $initnpm == 1 ]; then
     npm init -y
     npm i -D typescript tsc-watch eslint prettier eslint-config-prettier eslint-plugin-prettier @typescript-eslint/parser @typescript-eslint/eslint-plugin @types/node @types/express
@@ -70,11 +92,20 @@ if [[ -f $packagefile ]]; then
     jq '.scripts |= . + {"test": "echo \"Error: no test specified\" && exit 1","start": "node dist/index.js","dev": "tsc-watch --onSuccess \"node .dist/index.js\"","build": "tsc","postinstall": "npm run build"} ' $packagefile >> "tmp$packagefile"
     truncate -s 0 $packagefile
     mv "tmp$packagefile" $packagefile
+    
+    jq '._moduleAliases |= . + {"@/resources": "dist/resources","@/utils": "dist/utils", "@/middleware": "dist/middleware"} ' $packagefile >> "tmp$packagefile"
+    truncate -s 0 $packagefile
+    mv "tmp$packagefile" $packagefile    
 fi
 
-cd /tmp/nodejsscaffolding
+if [ $initnpm == 1 ]; then
+    npm i module-alias
+    npm i mongoose compression cors morgan helmet
+    npm i -D @types/compression @types/cors @types/morgan
+fi
+
+cd $SCRIPT_DIR
 
 cp .prettierrc.js $appDir
 cp .eslintrc.js $appDir
-cp .env.example $appDir
-
+cp .env.example $appDir/.env
