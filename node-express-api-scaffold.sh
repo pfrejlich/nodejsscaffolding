@@ -72,3 +72,9 @@ if [[ -f $packagefile ]]; then
     mv "tmp$packagefile" $packagefile
 fi
 
+cd /tmp/nodejsscaffolding
+
+cp .prettierrc.js $appDir
+cp .eslintrc.js $appDir
+cp .env.example $appDir
+
