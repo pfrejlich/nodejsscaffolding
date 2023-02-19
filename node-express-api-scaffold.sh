@@ -64,8 +64,6 @@ if [[ ! -d src/utils ]]; then
     mkdir src/utils
 fi
 
-touch app.ts
-
 if [ $initnpm == 1 ]; then
     npm init -y
     npm i -D typescript tsc-watch eslint prettier eslint-config-prettier eslint-plugin-prettier @typescript-eslint/parser @typescript-eslint/eslint-plugin @types/node @types/express
@@ -83,13 +81,14 @@ if [[ -f $tsconfigfile ]]; then
     echo "Modifying $tsconfigfile content..."
     sed -i 's#\/\/ "baseUrl": ".\/"#"baseUrl": ".\/src"#g' $tsconfigfile
     sed -i 's#\/\/ "outDir": ".\/"#"outDir": "dist"#g' $tsconfigfile
+    sed -i 's#\/\/ "rootDir": ".\/"#"rootDir": ".\/src"#g' $tsconfigfile
     sed -i 's#\/\/ "paths": {}#"paths": { "@/resources/*": ["resources/*"], "@/utils/*": ["utils/*"], "@/middleware/*": ["middleware/*"] }#g' $tsconfigfile
 fi
 
 packagefile="package.json"
 if [[ -f $packagefile ]]; then
     echo "Modifying $packagefile content..."
-    jq '.scripts |= . + {"test": "echo \"Error: no test specified\" && exit 1","start": "node dist/index.js","dev": "tsc-watch --onSuccess \"node .dist/index.js\"","build": "tsc","postinstall": "npm run build"} ' $packagefile >> "tmp$packagefile"
+    jq '.scripts |= . + {"test": "echo \"Error: no test specified\" && exit 1","start": "node dist/index.js","dev": "tsc-watch --onSuccess \"node ./dist/index.js\"","build": "tsc","postinstall": "npm run build"} ' $packagefile >> "tmp$packagefile"
     truncate -s 0 $packagefile
     mv "tmp$packagefile" $packagefile
     
@@ -102,6 +101,8 @@ if [ $initnpm == 1 ]; then
     npm i module-alias
     npm i mongoose compression cors morgan helmet
     npm i -D @types/compression @types/cors @types/morgan
+    npm i envalid
+    npm i joi
 fi
 
 cd $SCRIPT_DIR
@@ -124,5 +125,10 @@ if [[ ! -d $appDir/src/middleware ]]; then
     mkdir -p $appDir/src/middleware
 fi
 
+if [[ ! -d $appDir/src/resources ]]; then
+    mkdir -p $appDir/src/resources
+fi
+
 cp -r utils/* $appDir/src/utils
 cp -r middleware/* $appDir/src/middleware
+cp -r resources/* $appDir/src/resources
