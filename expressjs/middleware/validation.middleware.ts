@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import Joi from 'joi';
 
-function validationMiddleware(schema: Joi.Schema): RequestHandler {
+function validationMiddleware(
+    schema: Joi.Schema,
+    property: string
+): RequestHandler {
     return async (
         req: Request,
         res: Response,
@@ -14,8 +17,21 @@ function validationMiddleware(schema: Joi.Schema): RequestHandler {
         };
 
         try {
+            let requestSection = null;
+            switch (property) {
+                case 'body':
+                    requestSection = req.body;
+                    break;
+                case 'query':
+                    requestSection = req.query;
+                    break;
+                case 'route':
+                    requestSection = req.route;
+                    break;
+            }
+
             const value = await schema.validateAsync(
-                req.body,
+                requestSection,
                 validationOptions
             );
             req.body = value;

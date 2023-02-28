@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "LocalDB",
+            "database": "${workspaceFolder:clean-nest-api}/db.sqlite"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "TestDB",
+            "database": "${workspaceFolder:clean-nest-api}/test.sqlite"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

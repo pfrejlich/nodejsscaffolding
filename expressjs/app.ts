@@ -42,6 +42,7 @@ class App {
 
     private initializeDatabaseConnection(): void {
         const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
+        mongoose.set('strictQuery', true);
         mongoose.connect(`${MONGO_PATH}`);
     }
 

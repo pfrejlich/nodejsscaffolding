@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Source: https://www.youtube.com/watch?v=1o9YOHeKhNQ&ab_channel=Rettson
+# Follow-up: https://www.youtube.com/watch?v=FXzsv2BJLKs&t=58s&ab_channel=Rettson
+# https://github.com/santiq/bulletproof-nodejs
+
 initnpm=1
 usageHelpText="Usage: ./$(basename $0) [-s|h] appdir"
 
@@ -24,7 +28,7 @@ fi
 
 while getopts ':sh' option; do
    case $option in
-   	s) initnpm=0;;
+   	    s) initnpm=0;;
       	h) Help
       	   exit;;
      	*) echo $usageHelpText
@@ -36,8 +40,7 @@ shift "$((OPTIND - 1))"
 
 appDir="$1"
 
-if [ -d "$appDir" -a ! -L "
-$appDir" ]; then
+if [ -d "$appDir" -a ! -L "$appDir" ]; then
     echo "The folder $appDir already exists"
 else
     echo "The folder $appDir was not found. Creating..."
@@ -102,7 +105,7 @@ if [ $initnpm == 1 ]; then
     npm i mongoose compression cors morgan helmet
     npm i -D @types/compression @types/cors @types/morgan
     npm i envalid
-    npm i joi
+    npm i express-joi-validation joi --save
 fi
 
 cd $SCRIPT_DIR
